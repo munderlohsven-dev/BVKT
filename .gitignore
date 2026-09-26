@@ -1,0 +1,8 @@
+# Lokale Backup-Ausgaben nie einchecken
+E-Mail-Backup_*/
+*.eml
+*.mbox
+*.part
+Uebersicht.csv
+__pycache__/
+.DS_Store
