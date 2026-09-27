@@ -5,7 +5,7 @@ const sharp = require("sharp");
 const fa = require("react-icons/fa");
 const path = require("path");
 
-const OCHRE = "CC9933";
+const OCHRE = "E8963C";
 const WHITE = "FFFFFF";
 const BLACK = "000000";
 const CARD = "161616";
