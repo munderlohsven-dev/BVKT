@@ -1,10 +1,11 @@
 // Zweitagesseminar "Mentale Stärke, Achtsamkeit und Entschleunigung im Arbeitsalltag"
 const path = require("path");
 const { createDeck } = require("./layouts");
+const { IMAGES } = require("./images");
 
 const S = [
   // ───────────── ERÖFFNUNG ─────────────
-  { t: "cover", kicker: "ZWEITAGESSEMINAR", title: "Mentale Stärke, Achtsamkeit und Entschleunigung im Arbeitsalltag", size: 32,
+  { t: "cover", img: "01", kicker: "ZWEITAGESSEMINAR", title: "Mentale Stärke, Achtsamkeit und Entschleunigung im Arbeitsalltag", size: 32,
     sub: "Gelassener, klarer und ressourcenschonender arbeiten – ohne an Leistungsfähigkeit zu verlieren",
     meta: "Landkreis Osterholz  ·  Bildungsstätte Bredbeck", icon: "FaLeaf",
     notes: "Begrüßung, eigene Vorstellung, Organisatorisches (Räume, Pausen, Verpflegung, Wald-Exkursion an Tag 2)." },
@@ -36,15 +37,15 @@ const S = [
       ["Mein Kraftort", "Ein Ort, an dem Sie auftanken – ein Platz im Garten, am Wasser, im Moor …"],
       ["Was mir dort guttut", "Was genau erleben Sie dort? Was spüren, hören, sehen Sie?"],
       ["Mein Anliegen", "Was möchte ich aus diesen zwei Tagen mitnehmen?"]],
-    side: { icon: "FaMapSigns", h: "Hinweis", d: "Die Anliegen sammeln wir auf Moderationskarten an der Pinnwand. Am Ende von Tag 2 schauen wir, was sich erfüllt hat." },
+    side: { img: "17", icon: "FaMapSigns", h: "Hinweis", d: "Die Anliegen sammeln wir auf Moderationskarten an der Pinnwand. Am Ende von Tag 2 schauen wir, was sich erfüllt hat." },
     notes: "Runde im Stuhlkreis, ca. 2 Minuten pro Person. Anliegen auf Karten notieren lassen und an die Pinnwand heften." },
   { t: "scale", title: "Energie-Barometer", pill: "ÜBUNG · 5 MIN", q: "Wie voll ist Ihr Energietank gerade? Setzen Sie einen Klebepunkt.",
     left: "1 = völlig leer", right: "10 = voller Energie", extra: "Und im Durchschnitt der letzten drei Monate? Setzen Sie einen zweiten Punkt in einer anderen Farbe.",
     notes: "Flipchart mit Skala vorbereiten. Das Bild der Gruppe kurz wertfrei spiegeln. Am Ende von Tag 2 wiederholen." },
 
   // ───────────── BLOCK 1: MENTALE GESUNDHEIT ─────────────
-  { t: "section", n: "01", title: "Mentale Gesundheit", sub: "Was sie im Arbeitskontext bedeutet – und warum sie uns alle angeht.", icon: "FaHeartbeat" },
-  { t: "quote", text: "Mentale Gesundheit ist mehr als die Abwesenheit von Krankheit.", size: 30,
+  { t: "section", img: "02", n: "01", title: "Mentale Gesundheit", sub: "Was sie im Arbeitskontext bedeutet – und warum sie uns alle angeht.", icon: "FaHeartbeat" },
+  { t: "quote", img: "13", text: "Mentale Gesundheit ist mehr als die Abwesenheit von Krankheit.", size: 30,
     src: "Sinngemäß nach der Weltgesundheitsorganisation (WHO)",
     sub: "Sie ist ein Zustand des Wohlbefindens, in dem wir unsere Fähigkeiten nutzen, mit Belastungen umgehen, produktiv arbeiten und etwas zur Gemeinschaft beitragen können." },
   { t: "grid", title: "Salutogenese: Was hält uns gesund?", sub: "Das Kohärenzgefühl nach Aaron Antonovsky",
@@ -88,7 +89,7 @@ const S = [
     notes: "Frage an die Gruppe: Was ist Ihr persönliches erstes Warnsignal? Wer sein Signal kennt, kann früher gegensteuern." },
 
   // ───────────── BLOCK 2: STRESS VERSTEHEN ─────────────
-  { t: "section", n: "02", title: "Stress verstehen", sub: "Innere und äußere Belastungsfaktoren erkennen und einordnen.", icon: "FaBolt" },
+  { t: "section", img: "03", n: "02", title: "Stress verstehen", sub: "Innere und äußere Belastungsfaktoren erkennen und einordnen.", icon: "FaBolt" },
   { t: "compare", title: "Was ist Stress?", sub: "Nach Hans Selye: Stress ist nicht per se schlecht",
     left: { icon: "FaFire", h: "Eustress", items: ["Aktiviert und motiviert", "Zeitlich begrenzt", "Gefühl von Herausforderung", "Macht auch Freude"] },
     right: { icon: "FaExclamationTriangle", h: "Distress", items: ["Überfordert und lähmt", "Dauerhaft, ohne Erholung", "Gefühl von Bedrohung", "Macht auf Dauer krank"] },
@@ -156,8 +157,8 @@ const S = [
     notes: "Im Sitzen anleiten, ruhige Stimme, Pausen zum Nachspüren großzügig lassen." },
 
   // ───────────── BLOCK 3: RESILIENZ ─────────────
-  { t: "section", n: "03", title: "Resilienz und mentale Stärke", sub: "Die innere Widerstandskraft im beruflichen Alltag stärken.", icon: "FaShieldAlt" },
-  { t: "quote", text: "Resilienz heißt nicht, nie zu fallen – sondern immer wieder aufzustehen.", size: 30,
+  { t: "section", img: "04", n: "03", title: "Resilienz und mentale Stärke", sub: "Die innere Widerstandskraft im beruflichen Alltag stärken.", icon: "FaShieldAlt" },
+  { t: "quote", img: "14", text: "Resilienz heißt nicht, nie zu fallen – sondern immer wieder aufzustehen.", size: 30,
     src: "Resilienz = psychische Widerstandskraft", sub: "Wie ein Bambus im Sturm: Er biegt sich, aber er bricht nicht. Resilienz ist keine feste Eigenschaft, sondern lässt sich ein Leben lang stärken." },
   { t: "grid", title: "Die sieben Säulen der Resilienz", cols: 4, vertical: false,
     items: [["1", "Akzeptanz", "Annehmen, was sich nicht ändern lässt."],
@@ -192,7 +193,7 @@ const S = [
       ["Tiefpunkte markieren", "Wo gab es schwierige Phasen, Umbrüche oder Krisen?"],
       ["Wendepunkte finden", "Was hat Ihnen geholfen, wieder nach oben zu kommen?"],
       ["Stärken ableiten", "Welche Fähigkeiten haben Sie dabei gezeigt? Notieren Sie drei."]],
-    side: { icon: "FaChartLine", h: "Erkenntnis", d: "Sie haben schon viele Stürme überstanden. Diese Erfahrung ist Ihr größtes Kapital." },
+    side: { img: "18", icon: "FaChartLine", h: "Erkenntnis", d: "Sie haben schon viele Stürme überstanden. Diese Erfahrung ist Ihr größtes Kapital." },
     notes: "Gerade für Teilnehmende 50+ sehr ergiebig. Achtsam begleiten: Nur teilen, was man teilen möchte." },
   { t: "steps", title: "Das Ressourcen-Interview", pill: "PARTNERÜBUNG · 20 MIN",
     items: [["Erzählen", "A erzählt von einer beruflichen Situation, die gut gemeistert wurde."],
@@ -216,8 +217,8 @@ const S = [
       ["FaGlobeEurope", "Pervasiv", "Falle: „Alles geht schief.“\nGegenfrage: Welche Lebensbereiche laufen gerade gut?"]] },
 
   // ───────────── BLOCK 4: GEDANKEN ─────────────
-  { t: "section", n: "04", title: "Gedanken und Bewertungen", sub: "Einstellungen und innere Bewertungen bewusst wahrnehmen.", icon: "FaLightbulb" },
-  { t: "quote", text: "Nicht die Dinge selbst beunruhigen die Menschen, sondern ihre Urteile über die Dinge.", size: 28,
+  { t: "section", img: "05", n: "04", title: "Gedanken und Bewertungen", sub: "Einstellungen und innere Bewertungen bewusst wahrnehmen.", icon: "FaLightbulb" },
+  { t: "quote", img: "15", text: "Nicht die Dinge selbst beunruhigen die Menschen, sondern ihre Urteile über die Dinge.", size: 28,
     src: "Epiktet, griechischer Philosoph (ca. 50–138 n. Chr.)", sub: "Diese fast 2.000 Jahre alte Einsicht ist die Grundlage moderner kognitiver Methoden." },
   { t: "letters", title: "Das ABC-Modell nach Albert Ellis", hi: 1,
     items: [["A", "Auslöser", "Die Amtsleitung antwortet seit zwei Tagen nicht auf meine Mail."],
@@ -271,7 +272,7 @@ const S = [
     notes: "Hausaufgabe für den Abend. Morgen früh kurz nachfragen." },
 
   // ───────────── TAG 2 ─────────────
-  { t: "cover", kicker: "TAG 2", title: "Achtsamkeit, Entschleunigung und Waldbaden", size: 36,
+  { t: "cover", img: "06", kicker: "TAG 2", title: "Achtsamkeit, Entschleunigung und Waldbaden", size: 36,
     sub: "Guten Morgen! Heute steht das bewusste Erleben im Mittelpunkt.", meta: "Bildungsstätte Bredbeck  ·  Seminarraum und Wald", icon: "FaTree" },
   { t: "timeline", title: "Ablauf Tag 2",
     rows: [["09:00", "Ankommen & Check-in"], ["09:30", "Achtsamkeit"], ["10:45", "Kaffeepause", true], ["11:00", "Atem & Kurzentspannung"], ["11:45", "Entschleunigung im Alltag"],
@@ -283,8 +284,8 @@ const S = [
     notes: "Jede Person nennt ihr Wetter und einen Satz dazu. Anschließend: Wer hat gestern Abend die drei guten Dinge ausprobiert? Was wirkt von Tag 1 nach?" },
 
   // ───────────── BLOCK 5: ACHTSAMKEIT ─────────────
-  { t: "section", n: "05", title: "Achtsamkeit", sub: "Achtsamkeit als Haltung und als Methode.", icon: "FaSpa" },
-  { t: "quote", text: "Achtsamkeit bedeutet, auf eine bestimmte Weise aufmerksam zu sein: bewusst, im gegenwärtigen Augenblick und ohne zu bewerten.", size: 24,
+  { t: "section", img: "07", n: "05", title: "Achtsamkeit", sub: "Achtsamkeit als Haltung und als Methode.", icon: "FaSpa" },
+  { t: "quote", img: "16", imgSize: 19, text: "Achtsamkeit bedeutet, auf eine bestimmte Weise aufmerksam zu sein: bewusst, im gegenwärtigen Augenblick und ohne zu bewerten.", size: 24,
     src: "Jon Kabat-Zinn, Begründer des MBSR-Programms", sub: "MBSR = Mindfulness-Based Stress Reduction, Stressbewältigung durch Achtsamkeit" },
   { t: "table", title: "Autopilot oder Achtsamkeit?", heads: ["Autopilot", "Achtsamkeit"],
     rows: [["Aufmerksamkeit", "ist in Gedanken woanders", "ist im Hier und Jetzt"], ["Reaktion", "automatisch, impulsiv", "bewusst, gewählt"],
@@ -301,13 +302,13 @@ const S = [
   { t: "steps", title: "Die Rosinen-Übung", pill: "ÜBUNG · 10 MIN", sub: "Eine Rosine – als hätten Sie sie noch nie gesehen",
     items: [["Betrachten", "Farbe, Form, Falten, Glanz im Licht."], ["Fühlen", "Wie fühlt sie sich zwischen den Fingern an?"], ["Riechen", "Welcher Duft steigt auf? Was passiert im Mund?"],
       ["Schmecken", "In den Mund nehmen, nicht kauen. Dann langsam kauen."], ["Schlucken", "Bewusst schlucken und nachspüren."]],
-    side: { icon: "FaAppleAlt", h: "Austausch", d: "Was war anders als sonst? Wie oft essen wir im Autopiloten?" },
+    side: { img: "19", icon: "FaAppleAlt", h: "Austausch", d: "Was war anders als sonst? Wie oft essen wir im Autopiloten?" },
     notes: "Klassische Einstiegsübung aus MBSR. Alternative: Nuss oder Apfelstück (Allergien abfragen)." },
   { t: "steps", title: "Body-Scan in Kurzform", pill: "ÜBUNG · 15 MIN", sub: "Im Sitzen oder Liegen durch den Körper wandern",
     items: [["Ankommen", "Augen schließen oder Blick senken. Den Kontakt zum Boden spüren."], ["Füße & Beine", "Wärme, Kribbeln, Druck – oder auch nichts. Alles ist in Ordnung."],
       ["Rumpf", "Rücken an der Lehne, Bauch und Brust im Atem spüren."],
       ["Schultern & Kopf", "Nacken, Kiefer, Stirn: Darf etwas loslassen?"], ["Ganzer Körper", "Den Körper als Ganzes wahrnehmen. Langsam zurückkommen."]],
-    side: { icon: "FaStreetView", h: "Haltung", d: "Nichts muss sich verändern. Wir nehmen nur wahr, was da ist." } },
+    side: { img: "20", icon: "FaStreetView", h: "Haltung", d: "Nichts muss sich verändern. Wir nehmen nur wahr, was da ist." } },
   { t: "letters", title: "Der 3-Minuten-Atemraum", pill: "ÜBUNG · 3 MIN", sub: "Aus der achtsamkeitsbasierten kognitiven Therapie (MBCT)",
     items: [["1", "Ankommen", "Was ist gerade da? Gedanken, Gefühle, Körperempfindungen – einfach bemerken."],
       ["2", "Sammeln", "Die Aufmerksamkeit ganz auf den Atem lenken. Ein- und Ausatmen spüren."],
@@ -316,12 +317,12 @@ const S = [
   { t: "steps", title: "Achtsames Zuhören", pill: "PARTNERÜBUNG · 15 MIN",
     items: [["Erzählen", "A erzählt 3 Minuten: „Was mir in meiner Arbeit wichtig ist …“"], ["Zuhören", "B hört nur zu – ohne Unterbrechen, Nicken ist erlaubt."],
       ["Zusammenfassen", "B gibt in eigenen Worten wieder, was angekommen ist."], ["Wechseln", "Rollentausch – danach kurzer Austausch zu zweit."]],
-    side: { icon: "FaAssistiveListeningSystems", h: "Nachspüren", d: "Wie war es, wirklich gehört zu werden? Wie schwer war es, nur zuzuhören?" } },
+    side: { img: "21", icon: "FaAssistiveListeningSystems", h: "Nachspüren", d: "Wie war es, wirklich gehört zu werden? Wie schwer war es, nur zuzuhören?" } },
   { t: "reflection", title: "Wo bin ich im Autopiloten?", pill: "REFLEXION · 10 MIN",
     qs: ["Bei welchen Tätigkeiten bin ich oft gedanklich ganz woanders?", "In welchen Momenten reagiere ich automatisch, obwohl ich es anders möchte?", "Welche Alltagstätigkeit möchte ich künftig bewusst achtsam tun?", "Was könnte mich daran erinnern?"] },
 
   // ───────────── BLOCK 6: ATEM & KURZENTSPANNUNG ─────────────
-  { t: "section", n: "06", title: "Atem und Kurzentspannung", sub: "Übungen für zwischendurch – am Schreibtisch, im Auto, vor dem Termin.", icon: "FaWind" },
+  { t: "section", img: "08", n: "06", title: "Atem und Kurzentspannung", sub: "Übungen für zwischendurch – am Schreibtisch, im Auto, vor dem Termin.", icon: "FaWind" },
   { t: "compare", title: "Der Atem als Fernbedienung", sub: "Unser Nervensystem hat Gaspedal und Bremse",
     left: { icon: "FaTachometerAlt", h: "Sympathikus – Gaspedal", items: ["Aktivierung und Leistung", "Puls und Blutdruck steigen", "Atem flach und schnell", "Einatmung betont"] },
     right: { icon: "FaSpa", h: "Parasympathikus – Bremse", items: ["Erholung und Verdauung", "Puls und Blutdruck sinken", "Atem tief und ruhig", "Ausatmung betont"] },
@@ -341,7 +342,7 @@ const S = [
     items: [["Schultern kreisen", "Fünfmal nach hinten, fünfmal nach vorn – langsam und groß."], ["Nacken dehnen", "Kopf sanft zur Seite neigen, 20 Sekunden halten, Seite wechseln."],
       ["Aufrichten", "Aufstehen, Arme nach oben strecken, auf die Zehenspitzen gehen."], ["Augen entspannen", "Handflächen warm reiben und auf die geschlossenen Augen legen."],
       ["In die Ferne schauen", "Aus dem Fenster in die Weite blicken – mindestens 20 Sekunden."]],
-    side: { icon: "FaChild", h: "Hinweis", d: "Alles in Ihrem Tempo und ohne Schmerzen. Bewegungen dürfen klein sein." } },
+    side: { img: "22", icon: "FaChild", h: "Hinweis", d: "Alles in Ihrem Tempo und ohne Schmerzen. Bewegungen dürfen klein sein." } },
   { t: "grid", title: "Welche Übung wann?", sub: "Ihr Werkzeugkasten für den Arbeitstag",
     items: [["FaSun", "Morgens", "3-Minuten-Atemraum oder 4-6-Atmung vor dem ersten Blick ins Postfach."],
       ["FaPhoneAlt", "Vor Gesprächen", "Box Breathing – ruhig und konzentriert ins Gespräch."],
@@ -351,7 +352,7 @@ const S = [
       ["FaMoon", "Abends", "Body-Scan oder Progressive Muskelentspannung."]] },
 
   // ───────────── BLOCK 7: ENTSCHLEUNIGUNG ─────────────
-  { t: "section", n: "07", title: "Entschleunigung", sub: "Kleine Pausen mit großer Wirkung.", icon: "FaHourglassHalf" },
+  { t: "section", img: "09", n: "07", title: "Entschleunigung", sub: "Kleine Pausen mit großer Wirkung.", icon: "FaHourglassHalf" },
   { t: "big", title: "Warum wir Pausen brauchen", num: "90", label: "Minuten", info: "Unsere Leistungsfähigkeit verläuft in Wellen – nicht als gerade Linie.",
     items: [["Leistungskurve", "Nach etwa 90 Minuten konzentrierter Arbeit sinkt die Aufmerksamkeit spürbar."], ["Früh pausieren", "Kurze Pausen wirken am besten, bevor wir erschöpft sind."], ["Kleine Pausen zählen", "Mehrere Kurzpausen erholen oft mehr als eine lange."]],
     notes: "Ultradiane Rhythmen (Nathaniel Kleitman): Richtwert, individuell verschieden." },
@@ -373,10 +374,10 @@ const S = [
   { t: "steps", title: "Tipp: Ein Feierabend-Ritual", pill: "ALLTAGSTIPP", lead: "Ein bewusster Übergang hilft, die Arbeit im Büro zu lassen.",
     items: [["Rückblick", "Was habe ich heute geschafft? Drei Dinge notieren."], ["Offenes parken", "Die wichtigsten Aufgaben für morgen aufschreiben."],
       ["Aufräumen", "Schreibtisch ordnen, Computer herunterfahren."], ["Übergang", "Ein fester Abschluss: Tür schließen, tief durchatmen, der Weg nach Hause als Pause."]],
-    side: { icon: "FaDoorOpen", h: "Satz für den Abschluss", d: "„Für heute ist es genug. Morgen geht es weiter.“" } },
+    side: { img: "23", icon: "FaDoorOpen", h: "Satz für den Abschluss", d: "„Für heute ist es genug. Morgen geht es weiter.“" } },
 
   // ───────────── BLOCK 8: WALDBADEN ─────────────
-  { t: "section", n: "08", title: "Waldbaden", sub: "Shinrin-Yoku – mit allen Sinnen in die Atmosphäre des Waldes eintauchen.", icon: "FaTree" },
+  { t: "section", img: "10", n: "08", title: "Waldbaden", sub: "Shinrin-Yoku – mit allen Sinnen in die Atmosphäre des Waldes eintauchen.", icon: "FaTree" },
   { t: "grid", title: "Was ist Waldbaden?", sub: "Shinrin-Yoku: In den 1980er-Jahren in Japan geprägt",
     items: [["FaTree", "Eintauchen", "Kein Sport, keine Wanderung: langsam und absichtslos im Wald sein."], ["FaEye", "Alle Sinne", "Bewusst sehen, hören, riechen, tasten und spüren."], ["FaDove", "Stille", "Wenig sprechen, viel wahrnehmen – das Tempo drosseln."]] },
   { t: "grid", title: "Wie der Wald auf uns wirkt", sub: "Was Studien zum Waldaufenthalt nahelegen",
@@ -390,25 +391,25 @@ const S = [
   { t: "steps", title: "Station 1: Ankommen im Wald", pill: "IM WALD · 20 MIN",
     items: [["Schwelle", "Wir überschreiten bewusst eine „Schwelle“ und lassen den Alltag hinter uns."], ["Stehen", "Füße hüftbreit, Augen schließen, den Boden unter den Füßen spüren."],
       ["Lauschen", "Was hören Sie nah, was in der Ferne? Vögel, Wind, Blätter."], ["Riechen", "Tief einatmen: Wie riecht der Wald heute?"]],
-    side: { icon: "FaTree", h: "Impuls", d: "„Was nehme ich wahr, wenn ich nichts erreichen muss?“" } },
+    side: { img: "24", icon: "FaTree", h: "Impuls", d: "„Was nehme ich wahr, wenn ich nichts erreichen muss?“" } },
   { t: "steps", title: "Station 2: Achtsames Gehen", pill: "IM WALD · 20 MIN",
     items: [["Langsam gehen", "Deutlich langsamer als gewohnt – Schritt für Schritt."], ["Füße spüren", "Abrollen, Aufsetzen, Gewicht verlagern bewusst wahrnehmen."],
       ["Was bewegt sich?", "Achten Sie auf alles, was sich im Wald bewegt."], ["Im Schweigen", "Wir gehen schweigend hintereinander."]],
-    side: { icon: "FaShoePrints", h: "Impuls", d: "„Der Weg ist das Ziel – ich komme nirgendwo an, ich bin schon da.“" } },
+    side: { img: "25", icon: "FaShoePrints", h: "Impuls", d: "„Der Weg ist das Ziel – ich komme nirgendwo an, ich bin schon da.“" } },
   { t: "steps", title: "Station 3: Mein Sitzplatz", pill: "IM WALD · 25 MIN",
     items: [["Platz wählen", "Suchen Sie sich in Sichtweite einen Platz, der Sie anspricht."], ["Einfach sitzen", "Rund 15 Minuten nur sitzen, schauen, lauschen, atmen."],
       ["Nichts tun", "Kein Handy, kein Ziel. Gedanken dürfen kommen und gehen."], ["Rückruf", "Ein Signal ruft die Gruppe zurück."]],
-    side: { icon: "FaLeaf", h: "Impuls", d: "„Was sehe ich, wenn ich lange genug hinschaue?“" } },
+    side: { img: "26", icon: "FaLeaf", h: "Impuls", d: "„Was sehe ich, wenn ich lange genug hinschaue?“" } },
   { t: "steps", title: "Station 4: Begegnung mit einem Baum", pill: "IM WALD · 20 MIN",
     items: [["Baum finden", "Lassen Sie sich von einem Baum „einladen“."], ["Ertasten", "Rinde, Moos, Wurzeln – mit den Händen und geschlossenen Augen."],
       ["Anlehnen", "Mit dem Rücken an den Stamm lehnen, gemeinsam atmen."], ["Naturgeschenk", "Etwas Kleines mitnehmen, das Sie berührt hat: ein Blatt, ein Zapfen."]],
-    side: { icon: "FaTree", h: "Impuls", d: "Ein Baum steht fest, weil seine Wurzeln tief reichen. Was sind meine Wurzeln?" } },
+    side: { img: "27", icon: "FaTree", h: "Impuls", d: "Ein Baum steht fest, weil seine Wurzeln tief reichen. Was sind meine Wurzeln?" } },
   { t: "reflection", title: "Abschlusskreis im Wald", pill: "REFLEXION · 20 MIN",
     qs: ["Was hat mich im Wald berührt?", "Wofür steht mein Naturgeschenk?", "Was möchte ich von dieser Ruhe mit in den Alltag nehmen?"],
     notes: "Im Kreis stehend oder sitzend. Wer mag, legt sein Naturgeschenk in die Mitte und sagt ein bis zwei Sätze. Optional Tee aus der Thermoskanne." },
 
   // ───────────── BLOCK 9: TRANSFER ─────────────
-  { t: "section", n: "09", title: "Transfer in den Berufsalltag", sub: "Persönliche Strategien für mehr Ruhe und Klarheit.", icon: "FaRoute" },
+  { t: "section", img: "11", n: "09", title: "Transfer in den Berufsalltag", sub: "Persönliche Strategien für mehr Ruhe und Klarheit.", icon: "FaRoute" },
   { t: "grid", title: "Rückblick: Unser Werkzeugkoffer", cols: 4, vertical: false,
     items: [["FaBalanceScale", "Energiebilanz", "Räuber und Spender kennen"], ["FaFeather", "Erlauber", "Innere Antreiber entschärfen"], ["FaHandPaper", "Einflussbereich", "Kraft dort einsetzen, wo sie wirkt"],
       ["FaPen", "ABC-Analyse", "Bewertungen prüfen"], ["FaWind", "Atemübungen", "Box, 4-6, Seufzer"], ["FaSpa", "Achtsamkeit", "Atemraum, Body-Scan, STOP"],
@@ -427,11 +428,11 @@ const S = [
   { t: "steps", title: "Brief an mich selbst", pill: "ÜBUNG · 15 MIN",
     items: [["Schreiben", "Schreiben Sie sich einen Brief: Was möchte ich mir in sechs Wochen in Erinnerung rufen?"], ["Inhalte", "Erkenntnisse, Vorsätze, ermutigende Worte, Ihr Naturgeschenk."],
       ["Verschließen", "Adressieren und verschließen Sie den Umschlag."], ["Überraschung", "Wir schicken Ihnen den Brief in etwa sechs Wochen zu."]],
-    side: { icon: "FaEnvelope", h: "Warum?", d: "Der Brief erinnert Sie, wenn der Alltag die guten Vorsätze verdrängt hat – in Ihren eigenen Worten." } },
+    side: { img: "28", icon: "FaEnvelope", h: "Warum?", d: "Der Brief erinnert Sie, wenn der Alltag die guten Vorsätze verdrängt hat – in Ihren eigenen Worten." } },
   { t: "steps", title: "Transfer-Tandem", pill: "PARTNERÜBUNG · 10 MIN",
     items: [["Tandem bilden", "Finden Sie eine Person aus der Gruppe als Transfer-Partner:in."], ["Vorhaben teilen", "Erzählen Sie einander Ihre drei Strategien und Ihren WOOP-Plan."],
       ["Termin vereinbaren", "Vereinbaren Sie ein kurzes Telefonat in drei bis vier Wochen."], ["Nachfragen", "Was klappt? Was nicht? Was brauche ich noch?"]],
-    side: { icon: "FaHandsHelping", h: "Gemeinsam dranbleiben", d: "Wer sein Vorhaben mit anderen teilt, bleibt eher dabei. Das Tandem darf auch per Telefon stattfinden." } },
+    side: { img: "29", icon: "FaHandsHelping", h: "Gemeinsam dranbleiben", d: "Wer sein Vorhaben mit anderen teilt, bleibt eher dabei. Das Tandem darf auch per Telefon stattfinden." } },
   { t: "summary", title: "Das Wichtigste in Kürze",
     items: [["Stress entsteht im Kopf mit", "Bewertungen prüfen und Antreiber entschärfen."], ["Resilienz ist trainierbar", "Unser Gehirn lernt in jedem Alter."],
       ["Achtsamkeit schafft Raum", "Zwischen Reiz und Reaktion liegt unsere Freiheit."], ["Pausen sind Leistung", "Kleine Pausen, große Wirkung."], ["Natur heilt", "Der Wald ist ein Kraftort vor der Haustür."]],
@@ -439,13 +440,14 @@ const S = [
   { t: "reflection", title: "Abschlussrunde & Feedback", pill: "REFLEXION · 20 MIN",
     qs: ["Hat sich mein Anliegen vom Anfang erfüllt?", "Was nehme ich mit in meinen Arbeitsalltag?", "Wie voll ist mein Energietank jetzt? (Energie-Barometer)", "Was möchte ich der Gruppe noch sagen?"],
     notes: "Anliegen-Karten von Tag 1 von der Pinnwand nehmen. Energie-Barometer wiederholen und mit dem Morgen von Tag 1 vergleichen. Feedbackbogen austeilen." },
-  { t: "thanks", title: "Vielen Dank!", sub: "Bleiben Sie achtsam mit sich – und gönnen Sie sich regelmäßig Zeit im Grünen.",
+  { t: "thanks", img: "12", title: "Vielen Dank!", sub: "Bleiben Sie achtsam mit sich – und gönnen Sie sich regelmäßig Zeit im Grünen.",
     meta: "Kommen Sie gut nach Hause.", icon: "FaLeaf" },
 ];
 
 (async () => {
   if (S.length !== 100) console.warn("WARN: slide count = " + S.length);
-  const pres = await createDeck({ logo: path.join(__dirname, "logo_dark.png"), title: "Mentale Stärke, Achtsamkeit und Entschleunigung im Arbeitsalltag", slides: S });
+  const pres = await createDeck({ logo: path.join(__dirname, "logo_dark.png"), title: "Mentale Stärke, Achtsamkeit und Entschleunigung im Arbeitsalltag", slides: S, images: IMAGES, imageDir: path.join(__dirname, "bilder") });
+  if (pres.missingImages.length) console.log("Platzhalter für Bilder:", pres.missingImages.join(", "));
   await pres.writeFile({ fileName: path.join(__dirname, "Zweitagesseminar_Mentale_Staerke_Achtsamkeit.pptx") });
   console.log("slides:", S.length);
 })();

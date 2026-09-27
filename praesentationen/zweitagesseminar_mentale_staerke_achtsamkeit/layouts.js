@@ -4,6 +4,8 @@ const React = require("react");
 const ReactDOMServer = require("react-dom/server");
 const sharp = require("sharp");
 const fa = require("react-icons/fa");
+const fs = require("fs");
+const path = require("path");
 
 const OCHRE = "E8963C";
 const WHITE = "FFFFFF";
@@ -19,7 +21,7 @@ async function renderIcon(name) {
   return "image/png;base64," + buf.toString("base64");
 }
 
-async function createDeck({ logo, title, slides }) {
+async function createDeck({ logo, title, slides, images = {}, imageDir }) {
   const pres = new pptxgen();
   pres.layout = "LAYOUT_16x9"; // 10 x 5.625
   pres.author = "Visual Academy";
@@ -32,7 +34,24 @@ async function createDeck({ logo, title, slides }) {
   });
 
   const ic = {};
-  for (const n of new Set([...JSON.stringify(slides).match(/\bFa[A-Z]\w+/g), "FaCheckCircle", "FaWind"])) ic[n] = await renderIcon(n);
+  for (const n of new Set([...JSON.stringify(slides).match(/\bFa[A-Z]\w+/g), "FaCheckCircle", "FaWind", "FaCamera"])) ic[n] = await renderIcon(n);
+
+  // Photos: images/bild_XX.(jpg|jpeg|png|webp) -> cropped to the slot's aspect ratio
+  const photo = {};
+  const findImg = (id) => {
+    if (!imageDir || !fs.existsSync(imageDir)) return null;
+    const f = fs.readdirSync(imageDir).find((n) => new RegExp("^bild_" + id + "\\.(jpe?g|png|webp)$", "i").test(n));
+    return f ? path.join(imageDir, f) : null;
+  };
+  const ASPECT = { portrait: 3.2 / 4.0, wide: 2.9 / 1.55 };
+  for (const [id, meta] of Object.entries(images)) {
+    const f = findImg(id);
+    if (!f) continue;
+    const a = ASPECT[meta.slot], W = 1600, H = Math.round(W / a);
+    const buf = await sharp(f).rotate().resize(W, H, { fit: "cover", position: sharp.strategy.attention }).jpeg({ quality: 84 }).toBuffer();
+    photo[id] = "image/jpeg;base64," + buf.toString("base64");
+  }
+  const missing = [];
 
   const txt = (s, t, o) => s.addText(t, Object.assign({ fontFace: FONT, color: WHITE, isTextBox: true, margin: 0, valign: "top" }, o));
 
@@ -52,6 +71,17 @@ async function createDeck({ logo, title, slides }) {
       x, y, w, h, rectRadius: 0.08, fill: { color: CARD },
       line: outline ? { color: OCHRE, width: 1.25 } : { color: CARD },
     });
+  const imgBox = (s, id, x, y, w, h) => {
+    if (photo[id]) { s.addImage({ data: photo[id], x, y, w, h, altText: images[id].de }); return; }
+    missing.push(id);
+    s.addShape(pres.shapes.RECTANGLE, { x, y, w, h, fill: { color: CARD }, line: { color: OCHRE, width: 1.25, dashType: "dash" } });
+    const small = h < 2;
+    circleIcon(s, "FaCamera", x + w / 2 - (small ? 0.22 : 0.3), y + (small ? 0.2 : h / 2 - 0.75), small ? 0.44 : 0.6);
+    txt(s, "BILD " + id, { x: x + 0.15, y: y + (small ? 0.72 : h / 2 + 0.0), w: w - 0.3, h: 0.3, fontSize: 12, bold: true, color: OCHRE, align: "center", charSpacing: 2 });
+    txt(s, images[id].de, { x: x + 0.2, y: y + (small ? 1.02 : h / 2 + 0.35), w: w - 0.4, h: small ? h - 1.08 : 0.9, fontSize: small ? 9.5 : 11, align: "center", italic: true });
+  };
+  const PX = 6.3, PY = 1.0, PW = 3.2, PH = 4.0; // portrait photo panel
+
   const pill = (s, label, x = 0.5, y = 1.05) => {
     const w = 0.4 + label.length * 0.095;
     s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w, h: 0.34, rectRadius: 0.17, fill: { color: OCHRE }, line: { color: OCHRE } });
@@ -79,13 +109,21 @@ async function createDeck({ logo, title, slides }) {
 
   L.cover = (s, d) => {
     txt(s, d.kicker, { x: 0.5, y: 1.05, w: 7, h: 0.35, fontSize: 13, bold: true, color: OCHRE, charSpacing: 4 });
-    txt(s, d.title, { x: 0.5, y: 1.5, w: 6.9, h: 1.9, fontSize: d.size || 40, bold: true, valign: "middle" });
-    txt(s, d.sub, { x: 0.5, y: 3.55, w: 6.6, h: 0.8, fontSize: 17, color: OCHRE });
+    const cw = d.img ? 5.5 : 6.9;
+    txt(s, d.title, { x: 0.5, y: 1.5, w: cw, h: 1.9, fontSize: d.img && d.title.length > 50 ? 28 : (d.size || 40), bold: true, valign: "middle" });
+    txt(s, d.sub, { x: 0.5, y: 3.55, w: d.img ? 5.4 : 6.6, h: 0.8, fontSize: d.img ? 15 : 17, color: OCHRE });
     if (d.meta) txt(s, d.meta, { x: 0.5, y: 4.45, w: 6.6, h: 0.4, fontSize: 12 });
-    circleIcon(s, d.icon, 7.6, 2.3, 1.5);
+    d.img ? imgBox(s, d.img, PX, PY, PW, PH) : circleIcon(s, d.icon, 7.6, 2.3, 1.5);
   };
 
   L.section = (s, d) => {
+    if (d.img) {
+      txt(s, d.n, { x: 0.5, y: 1.0, w: 3, h: 1.3, fontSize: 88, bold: true, color: OCHRE });
+      txt(s, d.title, { x: 0.5, y: 2.35, w: 5.4, h: 1.15, fontSize: 32, bold: true, valign: "middle" });
+      txt(s, d.sub, { x: 0.5, y: 3.6, w: 5.3, h: 0.8, fontSize: 15, color: OCHRE, italic: true });
+      imgBox(s, d.img, PX, PY, PW, PH);
+      return;
+    }
     txt(s, d.n, { x: 0.5, y: 1.2, w: 3, h: 1.3, fontSize: 88, bold: true, color: OCHRE });
     txt(s, d.title, { x: 0.5, y: 2.55, w: 6.8, h: 0.8, fontSize: d.title.length > 24 ? 30 : 36, bold: true });
     txt(s, d.sub, { x: 0.5, y: 3.35, w: 6.5, h: 0.7, fontSize: 16, color: OCHRE, italic: true });
@@ -149,9 +187,15 @@ async function createDeck({ logo, title, slides }) {
     if (d.side) {
       const sy = y0, sh = 4.95 - y0;
       card(s, 6.6, sy, 2.9, sh, true);
-      circleIcon(s, d.side.icon, 6.85, sy + 0.25, 0.55);
-      txt(s, d.side.h, { x: 6.85, y: sy + 0.95, w: 2.5, h: 0.35, fontSize: 14, bold: true, color: OCHRE });
-      txt(s, d.side.d, { x: 6.85, y: sy + 1.35, w: 2.45, h: sh - 1.45, fontSize: 13 });
+      if (d.side.img) {
+        imgBox(s, d.side.img, 6.6, sy, 2.9, 1.55);
+        txt(s, d.side.h, { x: 6.85, y: sy + 1.7, w: 2.5, h: 0.35, fontSize: 14, bold: true, color: OCHRE });
+        txt(s, d.side.d, { x: 6.85, y: sy + 2.08, w: 2.45, h: sh - 2.15, fontSize: 12 });
+      } else {
+        circleIcon(s, d.side.icon, 6.85, sy + 0.25, 0.55);
+        txt(s, d.side.h, { x: 6.85, y: sy + 0.95, w: 2.5, h: 0.35, fontSize: 14, bold: true, color: OCHRE });
+        txt(s, d.side.d, { x: 6.85, y: sy + 1.35, w: 2.45, h: sh - 1.45, fontSize: 13 });
+      }
     }
   };
 
@@ -186,9 +230,11 @@ async function createDeck({ logo, title, slides }) {
 
   L.quote = (s, d) => {
     txt(s, "„", { x: 0.5, y: 0.7, w: 1.5, h: 1.4, fontSize: 110, bold: true, color: OCHRE });
-    txt(s, d.text, { x: 1.2, y: 1.5, w: 7.6, h: 2.2, fontSize: d.size || 28, bold: true, valign: "middle" });
-    if (d.src) txt(s, d.src, { x: 1.2, y: 3.8, w: 7.6, h: 0.4, fontSize: 15, color: OCHRE });
-    if (d.sub) txt(s, d.sub, { x: 1.2, y: 4.3, w: 7.6, h: 0.6, fontSize: 13, italic: true });
+    const qw = d.img ? 4.8 : 7.6;
+    txt(s, d.text, { x: 1.2, y: d.img ? 1.2 : 1.5, w: qw, h: d.img ? 2.5 : 2.2, fontSize: d.img ? (d.imgSize || 22) : (d.size || 28), bold: true, valign: "middle" });
+    if (d.src) txt(s, d.src, { x: 1.2, y: 3.8, w: qw, h: d.img ? 0.5 : 0.4, fontSize: d.img ? 13 : 15, color: OCHRE });
+    if (d.sub) txt(s, d.sub, { x: 1.2, y: d.img ? 4.35 : 4.3, w: qw, h: 0.7, fontSize: d.img ? 11.5 : 13, italic: true });
+    if (d.img) imgBox(s, d.img, PX, PY, PW, PH);
   };
 
   L.big = (s, d) => {
@@ -331,10 +377,11 @@ async function createDeck({ logo, title, slides }) {
   };
 
   L.thanks = (s, d) => {
-    txt(s, d.title, { x: 0.5, y: 1.3, w: 7, h: 1.6, fontSize: 44, bold: true, color: OCHRE, valign: "middle" });
-    txt(s, d.sub, { x: 0.5, y: 3.0, w: 6.6, h: 1.0, fontSize: 18 });
-    if (d.meta) txt(s, d.meta, { x: 0.5, y: 4.2, w: 6.6, h: 0.5, fontSize: 13, italic: true, color: OCHRE });
-    circleIcon(s, d.icon, 7.6, 2.3, 1.5);
+    const tw = d.img ? 5.4 : 6.6;
+    txt(s, d.title, { x: 0.5, y: 1.3, w: tw, h: 1.6, fontSize: 44, bold: true, color: OCHRE, valign: "middle" });
+    txt(s, d.sub, { x: 0.5, y: 3.0, w: tw, h: 1.0, fontSize: 18 });
+    if (d.meta) txt(s, d.meta, { x: 0.5, y: 4.2, w: tw, h: 0.5, fontSize: 13, italic: true, color: OCHRE });
+    d.img ? imgBox(s, d.img, PX, PY, PW, PH) : circleIcon(s, d.icon, 7.6, 2.3, 1.5);
   };
 
   for (const d of slides) {
@@ -343,6 +390,7 @@ async function createDeck({ logo, title, slides }) {
     L[d.t](s, d);
     if (d.notes) s.addNotes(d.notes);
   }
+  pres.missingImages = [...new Set(missing)];
   return pres;
 }
 
