@@ -63,6 +63,12 @@ const IMAGES = {
     prompt: "A handwritten letter in German cursive with a fountain pen and an envelope on a wooden table, a dried beech leaf beside it, warm soft light, personal and hopeful" },
   "29": { slot: "wide", de: "Zwei Kolleg:innen 50+ gehen im Gespräch einen Weg entlang",
     prompt: "Two colleagues in their fifties walking side by side along a tree-lined path, talking and laughing, seen from a slight distance, autumn light, supportive partnership" },
+  "30": { slot: "portrait", de: "Frau um die 52 steht am offenen Fenster, frische Luft, entspannter Gesichtsausdruck",
+    prompt: "A woman around fifty-two with shoulder-length hair stands at an open window of a bright office, eyes half closed, breathing in fresh air, a light breeze moving the curtain, relieved and calm expression, soft natural daylight" },
+  "31": { slot: "portrait", de: "Frau und Mann um die 55 gehen im Gespräch einen herbstlichen Weg entlang",
+    prompt: "A woman and a man both in their mid-fifties walking side by side on a tree-lined autumn path in northern Germany, talking openly and smiling, seen from a slight distance, warm golden light, mutual understanding" },
+  "32": { slot: "wide", de: "Frau 50+ am Schreibtisch mit Wasserglas, atmet ruhig mit geschlossenen Augen",
+    prompt: "A woman in her early fifties sitting at an office desk, eyes closed, one hand on her chest, a glass of cold water and a small desk fan beside her, calmly breathing through a hot flush, soft daylight, dignified and calm" },
 };
 
 module.exports = { IMAGES, STYLE };

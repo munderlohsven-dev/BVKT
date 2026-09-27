@@ -5,8 +5,9 @@ Landkreis Osterholz · Bildungsstätte Bredbeck · Zielgruppe: Beschäftigte, in
 - `Zweitagesseminar_Mentale_Staerke_Achtsamkeit.pptx` – 100 Folien, gleiches Layout wie „Mindset und mentale Stärke“ (schwarz, Orange-Ocker #E8963C / Weiß, Arial, Logo oben rechts)
 - `Angebotsbeschreibung.md` – inhaltliche Grundlage
 - `layouts.js` – wiederverwendbare Folien-Layouts; `build.js` – Inhalt aller Folien. Neu erzeugen mit `node build.js` (benötigt `pptxgenjs react react-dom react-icons sharp`)
-- `Bildprompts.md` – 29 Prompts für fotorealistische Bilder (aus `images.js`, erzeugt mit `node prompts.js`)
-- `bilder/` – hier die generierten Bilder als `bild_01.jpg` … `bild_29.jpg` ablegen; `node build.js` setzt sie automatisch zugeschnitten ein, fehlende Bilder erscheinen als Platzhalter
+- `Zusatzmodul_Menopause_Stress_Achtsamkeit.pptx` – 20 Folien zu Menopause, Stress und Achtsamkeit bei Frauen und Männern (Inhalt in `menopause.js`, erzeugen mit `node menopause.js`)
+- `Bildprompts.md` – 32 Prompts für fotorealistische Bilder (aus `images.js`, erzeugt mit `node prompts.js`)
+- `bilder/` – hier die generierten Bilder als `bild_01.jpg` … `bild_32.jpg` ablegen; `node build.js` bzw. `node menopause.js` setzt sie automatisch zugeschnitten ein, fehlende Bilder erscheinen als Platzhalter
 
 ## Aufbau
 | Folien | Block |

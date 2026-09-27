@@ -1,14 +1,15 @@
 // Erzeugt Bildprompts.md aus images.js und der Folienreihenfolge in build.js
 const fs = require("fs");
 const { IMAGES, STYLE } = require("./images");
-const src = fs.readFileSync(__dirname + "/build.js", "utf8");
-const blocks = src.split(/\n  \{ t: /).slice(1);
 const where = {};
-blocks.forEach((b, i) => {
-  const m = b.match(/img: "(\d+)"/);
-  const t = b.match(/title: "([^"]+)"/) || b.match(/text: "([^"]{0,40})/);
-  if (m) where[m[1]] = { slide: i + 1, title: t ? t[1] : "" };
-});
+for (const [file, deck] of [["build.js", "Seminar"], ["menopause.js", "Zusatzmodul Menopause"]]) {
+  const blocks = fs.readFileSync(__dirname + "/" + file, "utf8").split(/\n  \{ t: /).slice(1);
+  blocks.forEach((b, i) => {
+    const m = b.match(/img: "(\d+)"/);
+    const t = b.match(/title: "([^"]+)"/) || b.match(/text: "([^"]{0,40})/);
+    if (m) where[m[1]] = { slide: deck + ", Folie " + (i + 1), title: t ? t[1] : "" };
+  });
+}
 const fmt = { portrait: "Hochformat 4:5 (z. B. 1600 × 2000 px) – Midjourney: --ar 4:5", wide: "Querformat 16:9 (z. B. 1920 × 1080 px) – Midjourney: --ar 16:9" };
 let md = `# Bildprompts – Zweitagesseminar „Mentale Stärke, Achtsamkeit und Entschleunigung“
 
@@ -35,7 +36,7 @@ ${STYLE}
 `;
 for (const [id, im] of Object.entries(IMAGES)) {
   const w = where[id] || {};
-  md += `\n## Bild ${id} – ${im.de}\n- **Folie ${w.slide}:** ${w.title}\n- **Format:** ${fmt[im.slot]}\n\n\`\`\`\n${im.prompt}, ${STYLE}\n\`\`\`\n`;
+  md += `\n## Bild ${id} – ${im.de}\n- **${w.slide}:** ${w.title}\n- **Format:** ${fmt[im.slot]}\n\n\`\`\`\n${im.prompt}, ${STYLE}\n\`\`\`\n`;
 }
 fs.writeFileSync(__dirname + "/Bildprompts.md", md);
 console.log(Object.entries(where).map(([k, v]) => k + "→" + v.slide).join(" "));
