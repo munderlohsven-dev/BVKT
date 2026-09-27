@@ -2,53 +2,65 @@
 const fs = require("fs");
 const {
   Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, Table, TableRow, TableCell,
-  WidthType, ShadingType, LevelFormat, BorderStyle, Footer, PageNumber,
+  WidthType, ShadingType, LevelFormat, BorderStyle, Footer, Header, PageNumber, ImageRun, TableLayoutType,
 } = require("docx");
 
 const FONT = "Arial";
-const ACCENT = "1F4E79";
+// Farben aus der Excel-Tabelle (BVKT)
+const ACCENT = "005E8F";   // Primärblau
+const ORANGE = "FBAF3F";   // Akzent
+const LIGHT = "DCEAF3", LIGHTER = "F3F8FB", LINE = "B8C7D1";
+const TEXT = "2B2B2B", GRAY = "8A8A8A";
+const LOGO = fs.readFileSync(__dirname + "/bvkt_logo.png");
 
 const P = (text, o = {}) => new Paragraph({ spacing: { after: 120, line: 300 }, ...o, children: runs(text) });
 // **bold** markup inside strings
 function runs(text) {
   return text.split(/(\*\*[^*]+\*\*)/).filter(Boolean).map((t) =>
-    t.startsWith("**") ? new TextRun({ text: t.slice(2, -2), bold: true }) : new TextRun(t));
+    t.startsWith("**") ? new TextRun({ text: t.slice(2, -2), bold: true, color: ACCENT }) : new TextRun(t));
 }
-const H1 = (t) => new Paragraph({ heading: HeadingLevel.HEADING_1, keepNext: true, keepLines: true, spacing: { before: 320, after: 140 }, children: [new TextRun(t)] });
+const H1 = (t) => new Paragraph({ heading: HeadingLevel.HEADING_1, keepNext: true, keepLines: true, spacing: { before: 360, after: 160 }, border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: LINE, space: 4 } }, children: [new TextRun(t)] });
 const H2 = (t) => new Paragraph({ heading: HeadingLevel.HEADING_2, keepNext: true, keepLines: true, spacing: { before: 220, after: 100 }, children: [new TextRun(t)] });
 const B = (t) => new Paragraph({ numbering: { reference: "bullets", level: 0 }, spacing: { after: 60, line: 280 }, children: runs(t) });
 let numRef = 0;
 const numbered = (items) => { const ref = "num" + ++numRef; numCfg.push(numConfig(ref)); return items.map((t) => new Paragraph({ numbering: { reference: ref, level: 0 }, spacing: { after: 60, line: 280 }, children: runs(t) })); };
-const numConfig = (reference) => ({ reference, levels: [{ level: 0, format: LevelFormat.DECIMAL, text: "%1.", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 720, hanging: 360 } } } }] });
+const numConfig = (reference) => ({ reference, levels: [{ level: 0, format: LevelFormat.DECIMAL, text: "%1.", alignment: AlignmentType.LEFT, style: { run: { color: ACCENT, bold: true }, paragraph: { indent: { left: 720, hanging: 360 } } } }] });
 const numCfg = [];
 
-const meta = (label, value) => new Paragraph({ spacing: { after: 40 }, children: [new TextRun({ text: label + " ", bold: true }), new TextRun(value)] });
+const metaRow = (label, value) => new TableRow({ children: [
+  new TableCell({ width: { size: 3200, type: WidthType.DXA }, borders: noB, shading: { fill: LIGHTER, type: ShadingType.CLEAR, color: "auto" }, margins: { top: 50, bottom: 50, left: 160, right: 100 }, children: [new Paragraph({ children: [new TextRun({ text: label, bold: true, color: ACCENT, size: 20 })] })] }),
+  new TableCell({ width: { size: 5826, type: WidthType.DXA }, borders: noB, shading: { fill: LIGHTER, type: ShadingType.CLEAR, color: "auto" }, margins: { top: 50, bottom: 50, left: 100, right: 100 }, children: [new Paragraph({ children: [new TextRun({ text: value, size: 20 })] })] }),
+] });
+const metaTable = (rows) => new Table({ width: { size: 9026, type: WidthType.DXA }, columnWidths: [3200, 5826],
+  borders: { top: { style: BorderStyle.SINGLE, size: 12, color: ACCENT }, bottom: { style: BorderStyle.SINGLE, size: 12, color: ACCENT }, left: nb, right: nb, insideHorizontal: { style: BorderStyle.SINGLE, size: 2, color: LIGHT }, insideVertical: nb },
+  rows: rows.map(([a, b]) => metaRow(a, b)) });
 
-const cellBorder = { style: BorderStyle.SINGLE, size: 4, color: "BFBFBF" };
+const nb = { style: BorderStyle.NONE, size: 0, color: "FFFFFF" };
+const noB = { top: nb, bottom: nb, left: nb, right: nb };
+const cellBorder = { style: BorderStyle.SINGLE, size: 4, color: LINE };
 const borders = { top: cellBorder, bottom: cellBorder, left: cellBorder, right: cellBorder };
 function table(head, rows, widths) {
   const total = widths.reduce((a, b) => a + b, 0);
-  const cell = (t, i, isHead) => new TableCell({
+  const cell = (t, i, isHead, r = 0) => new TableCell({
     width: { size: widths[i], type: WidthType.DXA }, borders,
-    shading: isHead ? { fill: ACCENT, type: ShadingType.CLEAR, color: "auto" } : undefined,
+    shading: { fill: isHead ? ACCENT : r % 2 ? "FFFFFF" : LIGHTER, type: ShadingType.CLEAR, color: "auto" },
     margins: { top: 60, bottom: 60, left: 100, right: 100 },
-    children: [new Paragraph({ children: [new TextRun({ text: t, bold: isHead, color: isHead ? "FFFFFF" : undefined, size: 20 })] })],
+    children: [new Paragraph({ children: [new TextRun({ text: t, bold: isHead || t === "Sehr hoch", color: isHead ? "FFFFFF" : t === "Sehr hoch" ? ACCENT : undefined, size: 20 })] })],
   });
   return new Table({
     width: { size: total, type: WidthType.DXA }, columnWidths: widths,
     rows: [new TableRow({ tableHeader: true, children: head.map((t, i) => cell(t, i, true)) }),
-      ...rows.map((r) => new TableRow({ children: r.map((t, i) => cell(t, i, false)) }))],
+      ...rows.map((r, ri) => new TableRow({ children: r.map((t, i) => cell(t, i, false, ri)) }))],
   });
 }
 const gap = () => new Paragraph({ spacing: { after: 120 }, children: [] });
 
 const body = [
-  new Paragraph({ spacing: { after: 240 }, children: [new TextRun({ text: "Förderbericht zur Eingangsevaluation", bold: true, size: 36, color: ACCENT })] }),
-  meta("Projekt:", "Kids for success"),
-  meta("Institution:", "Bartholomäusschule Iserlohn"),
-  meta("Zeitpunkt:", "25. September 2026 (Schuljahr 2026/27)"),
-  meta("Anzahl teilnehmender Kinder:", "10 (Alter: 7 bis 9 Jahre)"),
-  meta("Bereich:", "Visuell-kognitives Training und motorische Entwicklung"),
+  new Paragraph({ spacing: { before: 120, after: 60 }, children: [new TextRun({ text: "KIDS FOR SUCCESS", bold: true, size: 20, color: ORANGE, characterSpacing: 40 })] }),
+  new Paragraph({ spacing: { after: 280 }, children: [new TextRun({ text: "Förderbericht zur Eingangsevaluation", bold: true, size: 40, color: ACCENT })] }),
+  metaTable([["Projekt", "Kids for success"], ["Institution", "Bartholomäusschule Iserlohn"], ["Zeitpunkt", "25. September 2026 (Schuljahr 2026/27)"],
+    ["Anzahl teilnehmender Kinder", "10 (Alter: 7 bis 9 Jahre)"], ["Bereich", "Visuell-kognitives Training und motorische Entwicklung"]]),
+  gap(),
 
   H1("1. Auftragsklärung und Ziel der Evaluation"),
   P("Im Rahmen des Projekts „Kids for success“ wurde am 25. September 2026 eine umfassende Eingangsevaluation mit einer Gruppe von zehn Kindern der Bartholomäusschule Iserlohn durchgeführt. Ziel dieser Evaluation war die systematische Erfassung des aktuellen Leistungsstands in den Bereichen visuelle Wahrnehmung, Binokularsehen, Blickbewegungen beim Lesen, kognitive Verarbeitung sowie motorische Koordination. Die gewonnenen Erkenntnisse dienen als Grundlage für die Erstellung individualisierter Förderpläne und die bedarfsgerechte Ausgestaltung der Projektinterventionen im Rahmen eines Gruppentrainings."),
@@ -195,16 +207,17 @@ const doc = new Document({
   creator: "Kids for success",
   title: "Förderbericht Eingangsevaluation Iserlohn 25.09.2026",
   styles: {
-    default: { document: { run: { font: FONT, size: 22 } } },
+    default: { document: { run: { font: FONT, size: 22, color: TEXT } } },
     paragraphStyles: [
       { id: "Heading1", name: "Heading 1", basedOn: "Normal", next: "Normal", quickFormat: true, run: { font: FONT, size: 28, bold: true, color: ACCENT }, paragraph: { outlineLevel: 0 } },
-      { id: "Heading2", name: "Heading 2", basedOn: "Normal", next: "Normal", quickFormat: true, run: { font: FONT, size: 24, bold: true, color: "404040" }, paragraph: { outlineLevel: 1 } },
+      { id: "Heading2", name: "Heading 2", basedOn: "Normal", next: "Normal", quickFormat: true, run: { font: FONT, size: 23, bold: true, color: ACCENT }, paragraph: { outlineLevel: 1 } },
     ],
   },
-  numbering: { config: [{ reference: "bullets", levels: [{ level: 0, format: LevelFormat.BULLET, text: "•", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 720, hanging: 360 } } } }] }, ...numCfg] },
+  numbering: { config: [{ reference: "bullets", levels: [{ level: 0, format: LevelFormat.BULLET, text: "■", alignment: AlignmentType.LEFT, style: { run: { color: ORANGE, size: 16 }, paragraph: { indent: { left: 720, hanging: 360 } } } }] }, ...numCfg] },
   sections: [{
-    properties: { page: { margin: { top: 1300, bottom: 1300, left: 1440, right: 1440 } } },
-    footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "Kids for success · Eingangsevaluation Iserlohn · 25.09.2026 · Seite ", size: 16, color: "808080" }), new TextRun({ children: [PageNumber.CURRENT], size: 16, color: "808080" })] })] }) },
+    properties: { page: { margin: { top: 1700, bottom: 1300, left: 1440, right: 1440, header: 500 } } },
+    headers: { default: new Header({ children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [new ImageRun({ type: "png", data: LOGO, transformation: { width: 62, height: 62 }, altText: { title: "BVKT e.V.", description: "Logo BVKT e.V.", name: "BVKT Logo" } })] })] }) },
+    footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "BVKT e.V.", bold: true, size: 16, color: ACCENT }), new TextRun({ text: "  ·  Kids for success  ·  Eingangsevaluation Iserlohn  ·  25.09.2026  ·  Seite ", size: 16, color: GRAY }), new TextRun({ children: [PageNumber.CURRENT], size: 16, color: GRAY })] })] }) },
     children: body,
   }],
 });
